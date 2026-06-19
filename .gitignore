@@ -28,11 +28,6 @@ build/
 *.sqlite
 *.db
 
-# Файлы отчётов тестов
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
 
 # Файлы окружения
 .env
