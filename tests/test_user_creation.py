@@ -9,27 +9,26 @@ class TestUserCreation:
 
     @allure.title("Создание уникального пользователя (через фикстуру)")
     def test_create_unique_user_with_fixture(self, new_user):
-        # Фикстура уже создала пользователя, проверяем, что данные есть
         assert new_user["email"] is not None
         assert new_user["password"] is not None
         assert new_user["name"] is not None
 
     @allure.title("Создание пользователя, который уже зарегистрирован")
-    def test_create_existing_user(self, base_url, new_user):
+    def test_create_existing_user(self, new_user):
         payload = {
             "email": new_user["email"],
             "password": new_user["password"],
             "name": new_user["name"]
         }
-        response = requests.post(f"{base_url}/api/auth/register", json=payload)
+        response = requests.post(f"{BASE_URL}/api/auth/register", json=payload)
         assert response.status_code == 403
         assert response.json().get("message") == ERROR_USER_EXISTS
 
     @allure.title("Создание пользователя без одного из обязательных полей")
     @pytest.mark.parametrize("missing_field", ["email", "password", "name"])
-    def test_create_user_missing_field(self, base_url, missing_field):
+    def test_create_user_missing_field(self, missing_field):
         user_data = generate_unique_user_data()
         del user_data[missing_field]
-        response = requests.post(f"{base_url}/api/auth/register", json=user_data)
+        response = requests.post(f"{BASE_URL}/api/auth/register", json=user_data)
         assert response.status_code == 403
         assert response.json().get("message") == ERROR_MISSING_FIELDS
